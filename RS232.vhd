@@ -105,10 +105,14 @@ begin
 							sm_counter := sm_counter + 1;
 						end if;
 					when STOP =>
+						if sm_counter = 415 then
+							data_ready <= '1';
+						end if;
 						if sm_counter = 416 then
 							if data_in = '1' then
 								sm_state <= IDLE;
 								sm_counter := 0;
+								data_ready <= '0';
 							end if;
 						else
 								sm_counter := sm_counter + 1;
@@ -122,8 +126,6 @@ begin
 		end if;
 	end process;
 
-	data_out <= data_received when ((sm_state = STOP) and (sm_init = '1')) else (others => '0');
-	data_ready <= '1' when ((sm_state = IDLE) and (sm_init = '1')) else '0';
-	
+	data_out <= data_received;	
 	
 end behv;
