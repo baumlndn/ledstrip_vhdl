@@ -17,7 +17,6 @@ end RS232;
 architecture behv of RS232 is
 type STATES is (IDLE,START,SYNC,B1,B2,B3,B4,B5,B6,B7,STOP);
 signal sm_state : STATES := IDLE;
-signal sm_init : std_logic := '0';
 signal data_received : std_logic_vector(7 downto 0) := (others => '0');
 begin
 
@@ -31,7 +30,6 @@ begin
 						if data_in = '0' then
 							sm_counter := 0;
 							sm_state <= START;
-							sm_init <= '1';
 						end if;
 					when START =>
 						if sm_counter = 416 then
