@@ -42,26 +42,23 @@ begin
 					end if;
 				end if;
 			when RECV =>
-				if enable = '1' then
-					mem_write <= '1';
-					sm_state <= RECVD;
-				end if;
-			when RECVD =>
-				mem_write <= '0';
 				if address = max then
 					sm_state <= M_FULL;
 					address <= (others => '0');
 				else
-					address <= std_logic_vector(unsigned(address)+1);
-					sm_state <= RECV;
-				end if;
+					if enable = '1' then
+						mem_write <= '1';
+						sm_state <= RECVD;
+					end if;
+				end if;				
+			when RECVD =>
+				mem_write <= '0';
+				address <= std_logic_vector(unsigned(address)+1);
+				sm_state <= RECV;
 			when M_FULL =>
-				if enable = '1' then
-					address <= std_logic_vector(unsigned(address)+1);
-					sm_state <= SEND;
-				end if;
+				sm_state <= SEND;
 			when SEND =>
-				if address = max then
+				if std_logic_vector(unsigned(address)+1) = max then
 					sm_state <= M_IDLE;
 				else
 					if enable = '1' then
