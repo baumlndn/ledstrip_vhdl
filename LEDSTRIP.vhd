@@ -25,7 +25,7 @@ signal clock : std_logic := '0';
 signal write_buf : std_logic := '0';
 signal buffer_empty : std_logic := '0';
 signal buffer_full : std_logic := '0';
-type STATES is (WAIT1,WAIT2,WAIT3,SEND,WRBUF,RELOAD);
+type STATES is (WAIT1,WAIT2,WAIT3,SEND,WRBUF,RELOAD,RELOAD1);
 signal sm_state : STATES := WAIT1;
 
 begin
@@ -73,6 +73,8 @@ begin
 				end if;
 			when RELOAD =>
 				write_buf <= '0';
+				sm_state <= RELOAD1;
+			when RELOAD1 =>
 				sm_state <= SEND;
 		end case;
 	end if;
