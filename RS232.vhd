@@ -17,7 +17,7 @@ end RS232;
 -------------------------------------------------
 
 architecture behv of RS232 is
-type STATES is (CLKSYNC,IDLE,START,SYNC,B1,B2,B3,B4,B5,B6,B7,STOP);
+type STATES is (CLKSYNC,IDLE,START,SYNC,B1,B2,B3,B4,B5,B6,B7,STOP,DONE);
 type SYNCSTATES is (IDLE,STRT,S1,S2,S3,S4,S5,S6,S7,S8,EVAL);
 type SYNCARY is array(0 to 8) of integer range 0 to 1023;
 signal sm_state : STATES := CLKSYNC;
@@ -180,18 +180,18 @@ begin
 							sm_counter := sm_counter + 1;
 						end if;
 					when STOP =>
-						if sm_counter = (sm_halfref-1) then
-							data_ready <= '1';
-						end if;
 						if sm_counter = sm_halfref then
 							if data_in = '1' then
-								sm_state <= IDLE;
+								sm_state <= DONE;
 								sm_counter := 0;
-								data_ready <= '0';
+								data_ready <= '1';
 							end if;
 						else
 								sm_counter := sm_counter + 1;
 						end if;
+					when DONE =>
+						sm_state <= IDLE;
+						data_ready <= '0';
 					when others =>
 						sm_state <= IDLE;
 				end case;

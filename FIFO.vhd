@@ -23,7 +23,7 @@ type STATES is (M_IDLE,RECV,RECVD,M_FULL,SEND);
 signal sm_state : STATES := M_IDLE;
 signal address, max : std_logic_vector(7 downto 0) := (others => '0');
 signal mem_write :std_logic := '0';
-signal ALL_ZERO : std_logic_vector(7 downto 0) := (others => '0');
+constant ALL_ZERO : std_logic_vector(7 downto 0) := (others => '0');
 begin
 
 MEM1 : entity work.MEM port map (data_in,	data_out, address, mem_write, clk);

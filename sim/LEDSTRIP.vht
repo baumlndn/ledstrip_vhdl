@@ -32,7 +32,8 @@ ENTITY LEDSTRIP_vhd_tst IS
 END LEDSTRIP_vhd_tst;
 ARCHITECTURE LEDSTRIP_arch OF LEDSTRIP_vhd_tst IS
 -- constants
-constant clk_period : time := 20 ps;                                                 
+constant clk_period : time := 20 ns;
+constant serial_period : time := 8.68 us; -- 115200                                                 
 -- signals                                                   
 SIGNAL clock : STD_LOGIC := '0';
 SIGNAL data_in : STD_LOGIC;
@@ -65,30 +66,34 @@ always : PROCESS
 procedure sendByte(constant x : std_logic_vector(7 downto 0)) is
 begin
 	data_in <= '0';
-	wait for 10 ns;
+	wait for serial_period;
 
 	for a in 0 to 7 loop
 		data_in <= x(a);
-		wait for 10 ns;
+		wait for serial_period;
 	end loop;
 	
 	data_in <= '1';
-	wait for 10 ns;	
+	wait for serial_period;	
 end procedure;                                     
 BEGIN    
-	wait for 10 ns;
+	wait for serial_period;
 	-- Syncbyte
 	sendByte("01010101");
 	-- No of LEDs
-	sendByte("00000010");
+	sendByte("00000011");
 	-- First LED
-	sendByte("10101010");
-	sendByte("11111111");
-	sendByte("00001100");
+	sendByte("00000001");
+	sendByte("00000010");
+	sendByte("00000011");
 	-- Second LED
-	sendByte("01010101");
-	sendByte("11001100");
-	sendByte("00001111");
+	sendByte("00000100");
+	sendByte("00000101");
+	sendByte("00000110");
+	-- Third LED
+	sendByte("00000111");
+	sendByte("00001000");
+	sendByte("00001001");
         -- code executes for every event on sensitivity list  
 WAIT;                                                        
 END PROCESS always;    
